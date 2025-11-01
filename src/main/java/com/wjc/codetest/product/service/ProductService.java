@@ -9,6 +9,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
@@ -48,9 +49,12 @@ public class ProductService {
         productRepository.delete(product);
     }
 
-    public Page<Product> getListByCategory(GetProductListRequest dto) {
-        PageRequest pageRequest = PageRequest.of(dto.getPage(), dto.getSize(), Sort.by(Sort.Direction.ASC, "category"));
-        return productRepository.findAllByCategory(dto.getCategory(), pageRequest);
+    public Page<Product> getAll(Pageable pageable) {
+        return productRepository.findAll(pageable);
+    }
+
+    public Page<Product> getListByCategory(String category, Pageable pageable) {
+        return productRepository.findAllByCategory(category, pageable);
     }
 
     public List<String> getUniqueCategories() {
