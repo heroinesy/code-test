@@ -50,7 +50,7 @@ import java.util.List;
  *    - Soft Delete 적용:
  *        • Product 엔티티에 active 필드 추가
  *        • delete() 대신 activate()/deactivate()로 상태 변경 처리
- *    - TODO: 전역 예외 처리(GlobalExceptionHandler) 예정
+ *    - 전역 예외 처리(GlobalExceptionHandler) 적용
  */
 
 @RestController
