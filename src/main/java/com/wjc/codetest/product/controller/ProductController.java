@@ -1,7 +1,6 @@
 package com.wjc.codetest.product.controller;
 
 import com.wjc.codetest.product.model.request.CreateProductRequest;
-import com.wjc.codetest.product.model.request.GetProductListRequest;
 import com.wjc.codetest.product.model.domain.Product;
 import com.wjc.codetest.product.model.request.UpdateProductRequest;
 import com.wjc.codetest.product.model.response.ProductListResponse;
@@ -37,10 +36,13 @@ public class ProductController {
     }
 
     /** 상품 삭제 */
-    @PostMapping(value = "/delete/product/{productId}")
-    public ResponseEntity<Boolean> deleteProduct(@PathVariable(name = "productId") Long productId){
-        productService.deleteById(productId);
-        return ResponseEntity.ok(true);
+    @PostMapping(value = "/{productId}/active")
+    public ResponseEntity<Void> deleteProduct(
+            @PathVariable(name = "productId") Long productId,
+            @RequestParam boolean active
+    ){
+        productService.changeActive(productId, active);
+        return ResponseEntity.ok().build();
     }
 
     /** 상품 수정 */
@@ -73,7 +75,6 @@ public class ProductController {
 
         return ResponseEntity.ok(response);
     }
-
 
     /** 카테고리 목록 조회 */
     @GetMapping(value = "/categories")

@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
 
@@ -19,7 +20,6 @@ import java.util.*;
 @Service
 @RequiredArgsConstructor
 public class ProductService {
-
     private final ProductRepository productRepository;
 
     public Product create(CreateProductRequest dto) {
@@ -41,12 +41,6 @@ public class ProductService {
         product.setName(dto.getName());
         Product updatedProduct = productRepository.save(product);
         return updatedProduct;
-
-    }
-
-    public void deleteById(Long productId) {
-        Product product = getProductById(productId);
-        productRepository.delete(product);
     }
 
     public Page<Product> getAll(Pageable pageable) {
@@ -59,5 +53,17 @@ public class ProductService {
 
     public List<String> getUniqueCategories() {
         return productRepository.findDistinctCategories();
+    }
+
+    @Transactional
+    public void changeActive(Long productId, boolean active) {
+        Product product = getProductById(productId);
+
+        if (active) {
+            product.activate();
+        } else {
+            product.deactivate();
+        }
+        productRepository.save(product);
     }
 }
