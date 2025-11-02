@@ -18,23 +18,20 @@ import java.util.*;
 
 @Slf4j
 @Service
+@Transactional(readOnly = true)
 @RequiredArgsConstructor
 public class ProductService {
     private final ProductRepository productRepository;
 
+    /** 상품 생성 */
+    @Transactional
     public Product create(CreateProductRequest dto) {
         Product product = new Product(dto.getCategory(), dto.getName());
         return productRepository.save(product);
     }
 
-    public Product getProductById(Long productId) {
-        Optional<Product> productOptional = productRepository.findById(productId);
-        if (!productOptional.isPresent()) {
-            throw new RuntimeException("product not found");
-        }
-        return productOptional.get();
-    }
-
+    /** 상품 수정 */
+    @Transactional
     public Product update(UpdateProductRequest dto) {
         Product product = getProductById(dto.getId());
         product.setCategory(dto.getCategory());
@@ -43,18 +40,7 @@ public class ProductService {
         return updatedProduct;
     }
 
-    public Page<Product> getAll(Pageable pageable) {
-        return productRepository.findAll(pageable);
-    }
-
-    public Page<Product> getListByCategory(String category, Pageable pageable) {
-        return productRepository.findAllByCategory(category, pageable);
-    }
-
-    public List<String> getUniqueCategories() {
-        return productRepository.findDistinctCategories();
-    }
-
+    /** 상품 상태 활성화/비활성화 변경 */
     @Transactional
     public void changeActive(Long productId, boolean active) {
         Product product = getProductById(productId);
@@ -65,5 +51,27 @@ public class ProductService {
             product.deactivate();
         }
         productRepository.save(product);
+    }
+
+    /** 상품 단건 조회 */
+    public Product getProductById(Long productId) {
+        Optional<Product> productOptional = productRepository.findById(productId);
+        if (!productOptional.isPresent()) {
+            throw new RuntimeException("product not found");
+        }
+        return productOptional.get();
+    }
+
+    /** 목록 조회 */
+    public Page<Product> getAll(Pageable pageable) {
+        return productRepository.findAll(pageable);
+    }
+
+    public Page<Product> getListByCategory(String category, Pageable pageable) {
+        return productRepository.findAllByCategory(category, pageable);
+    }
+
+    public List<String> getUniqueCategories() {
+        return productRepository.findDistinctCategories();
     }
 }

@@ -35,7 +35,7 @@ public class ProductController {
         return ResponseEntity.ok(product);
     }
 
-    /** 상품 삭제 */
+    /** 상품 상태 활성화/비활성화 */
     @PostMapping(value = "/{productId}/active")
     public ResponseEntity<Void> deleteProduct(
             @PathVariable(name = "productId") Long productId,
